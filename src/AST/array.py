@@ -2,8 +2,6 @@ from .data import *
 from ..AST_Base import *
 from ..error import *
 from ..global_var import *
-from ..AST.data_types import Integer
-from copy import deepcopy
 from ..data_types import ARRAY
 
 class Array(AST_Node):
@@ -19,6 +17,8 @@ class Array(AST_Node):
 
     def add_variables(self, dimensions):
         result = {}
+        result['left'] = dimensions[0][0]
+        result['right'] = dimensions[0][1]
         if len(dimensions) == 1:
             for i in range(dimensions[0][0], dimensions[0][1]+1):
                 result[i] = (stack.structs[self.var_type](name=i), self.var_type)
@@ -30,8 +30,7 @@ class Array(AST_Node):
     def exe(self):
         dimensions = self.dimensions.exe()
         result = self.add_variables(dimensions)
-        stack.new_variable(self.id, 'ARRAY')
-        stack.set_variable(self.id, result, 'ARRAY')
+        stack.new_variable(self.id, 'ARRAY', result)
 
 class Dimensions(AST_Node):
     def __init__(self, *args, **kwargs):
@@ -152,64 +151,41 @@ class Array_get(AST_Node):
         value = self.get_value(arr, indexes)
         return value
 
-class Array_total_assign(AST_Node):
-    def __init__(self, id, items, *args, **kwargs):
-        self.type = 'ARRAY_TOTAL_ASSIGN'
-        self.id = id
-        self.items = items
-        super().__init__(*args, **kwargs)
-
-    def get_tree(self, level=0):
-        return LEVEL_STR * level + self.type + ' ' + str(self.id) + '\n' + self.items.get_tree(level+1)
-
-    def exe(self):
-        items = self.items.exe()
-        arr = stack.get_variable(self.id)
-        if len(items) == len(arr[0]):
-            keys = list(arr[0].keys())
-            for i in range(len(items)):
-                index = Indexes()
-                index.add_index(Integer(keys[i]))
-                Array_assign(self.id, index, items[i]).exe()
-        else:
-            add_error_message(f'Cannot assign to `{self.id}` because they are not the same size', self)
-
 class Array_items(AST_Node):
     def __init__(self, *args, **kwargs):
         self.type = 'ARRAY_ITEMS'
         self.items = []
         super().__init__(*args, **kwargs)
 
-    def get_tree(self, level=0):
-        result = LEVEL_STR * level + self.type
-        for i in self.items:
-            result += '\n' + i.get_tree(level+1)
-        return result
-
     def add_item(self, item):
         self.items.append(item)
 
-    def exe(self):
-        return self.items
+    def get_tree(self, level=0):
+        return LEVEL_STR* level + self.type + '\n' + '\n'.join(i.get_tree(level+1) for i in self.items)
 
-class Array_indexes_total_assign(AST_Node):
-    def __init__(self, id, indexes, items, *args, **kwargs):
-        self.type = 'ARRAY_INDEXES_TOTAL_ASSIGN'
-        self.id = id
-        self.indexes = indexes
+    def exe(self):
+        items = []
+        for i in self.items:
+            items.append(i.exe())
+        return items
+
+class Array_expression(AST_Node):
+    def __init__(self, items, *args, **kwargs):
+        self.type = 'ARRAY_EXPRESSION'
         self.items = items
         super().__init__(*args, **kwargs)
 
     def get_tree(self, level=0):
-        return LEVEL_STR * level + self.type + ' ' + str(self.id) + '\n' + self.indexes.get_tree(level+1) + '\n' + self.items.get_tree(level+1)
+        return LEVEL_STR * level + self.type + '\n' + self.items.get_tree(level+1)
 
     def exe(self):
+        value = {}
         items = self.items.exe()
-        keys = list(Array_get(self.id, self.indexes).exe()[0].keys())
-        if len(keys) == len(items):
-            for i in range(len(items)):
-                index = deepcopy(self.indexes)
-                index.add_index(Integer(keys[i]))
-                Array_assign(self.id, index, items[i]).exe()
-        else:
-            add_error_message(f'Cannot assign to `{self.id}` because they are not the same size', self)
+        value['left'] = 1
+        value['right'] = len(items)
+        for i in range(1, len(items)+1):
+            if type(items[i-1]) == tuple:
+                value[i] = (stack.structs[items[i-1][1]](items[i-1][0]), items[i-1][1])
+            else:
+                value[i] = items[i-1]
+        return ARRAY(value)
