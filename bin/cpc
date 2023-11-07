@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/bin/sh
 
 # Execute if the executable is executable.
 try_run() {
@@ -17,8 +17,8 @@ unset -v parent_path
 unset -v exe_path
 
 # Find python and run it.
+mac_py_dir="/Library/Frameworks/Python.framework/Versions"
 if [ $(uname -s) = "Darwin" ] && [ -d "$mac_py_dir" ]; then
-  mac_py_dir="/Library/Frameworks/Python.framework/Versions"
   for path in "$mac_py_dir"/*; do
     case $(basename "$path" | tr '[:upper:]' '[:lower:]') in
       *pypy*) try_run "$path/bin/python3" "$script_path" "$@";;
