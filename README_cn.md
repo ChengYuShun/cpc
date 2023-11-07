@@ -1,5 +1,8 @@
-# CAIE Code
-CAIE Pseudocode Interpreter
+# CAIE Code (cpc)
+
+<p align="center">
+<a href="./README_cn.md">中文</a> | <a href="./README.md">English</a>
+</p>
 
 ## 安装与使用
 
@@ -20,8 +23,6 @@ CAIE Pseudocode Interpreter
     * `MacOS`若无法正常运行其中的二进制文件，可尝试自己编译 [`build.sh`](./build.sh)
     * `Windows`若无法正常运行，也可尝试自己编译 [`build.ps1`](./build.ps1)
     >若运行已有二进制文件后无反应，同上。若依旧无法解决，请提交issue
-    * `Linux`用户请在[bin](./bin/linux/)中寻找自己对应系统平台的编译文件，若没有找到，请自行修改[`build-linux.sh`](./build-linux.sh)并编译
-    * 非常欢迎`Linux`用户编译后提交pr
     * 如果需要使用`man`指令，请自行将[cpc.1](./man/cpc.1)硬链接到你的`MANPATH`内，以便更新后不必再次链接。
         * `Linux`用户可以使用以下指令:
             ```
@@ -418,3 +419,29 @@ NEXT i
 - [x] 实现文件读写（还剩 `GETRECORD` 和 `PUTRECORD`，这需要等自定义类型实现后才能实现）
 - [ ] 提供更多[非官方函数](./scripts/README.md)
 - [ ] 提高效率（正在进行）
+
+
+## 作者与贡献者
+<a href="https://github.com/iewnfod/CAIE_Code/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=iewnfod/CAIE_Code">
+</a>
+
+## License
+MIT License
+
+Copyright (c) 2023 Iewnfod
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+and associated documentation files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or
+substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
