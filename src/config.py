@@ -1,6 +1,7 @@
 import os
 import json
 from .history import HOME_PATH
+from .config_funcs import *
 
 class _Config:
 	def __init__(self, name, default_val, update_func=None):
@@ -10,7 +11,7 @@ class _Config:
 		self.update_func = update_func
 
 	def to_string(self):
-		return str(self.val)
+		return self.val
 
 	def update(self, value):
 		if self.update_func:
@@ -21,22 +22,15 @@ class _Config:
 	def _init_update(self, value):
 		self.val = value
 
-def remote_update(obj, value):
-	if value == 'github':
-		obj.val = 'https://github.com/iewnfod/CAIE_Code.git'
-	elif value == 'gitee':
-		obj.val = 'https://gitee.com/ricky-tap/CAIE_Code.git'
-	else:
-		from .quit import quit
-		print(f'Config `{obj.name}` only accept `github` or `gitee`')
-		quit(1)
-
 class Config:
 	def __init__(self, config_file_name=".cpc_config.json"):
 		self.config_path = os.path.join(HOME_PATH, config_file_name)
 		self.config = {
-			'remote': _Config('remote', 'https://github.com/iewnfod/CAIE_Code.git', update_func=remote_update)
+			'remote': _Config('remote', 'https://github.com/iewnfod/CAIE_Code.git', update_func=remote_update),
+			'pip': _Config('pip', 'https://pypi.tuna.tsinghua.edu.cn/simple/', update_func=pip_update),
+			'dev': _Config('dev', False, update_func=dev_mod)
 		}
+		# 如果已经存在配置文件，那就加载配置文件
 		if os.path.exists(self.config_path):
 			with open(self.config_path, 'r') as f:
 				dict = json.loads(f.read())
@@ -45,9 +39,8 @@ class Config:
 						self.config[key]._init_update(val)
 					else:
 						self.err_config(key)
-		else:
-			# 创建配置文件
-			self.write_config()
+
+		self.write_config()
 
 	def write_config(self):
 		dict = {}
@@ -67,12 +60,12 @@ class Config:
 
 	def output_available_configs(self):
 		print('Available configs: ')
-		for i in self._default_config.keys():
+		for i in self.config.keys():
 			print(f'\t{i}')
 
 	def err_config(self, opt_name):
 		from .quit import quit
-		print(f'Unknown config: \033[1m{opt_name}\033[0m')
+		print(f'Unknown config: {opt_name}')
 		self.output_available_configs()
 		quit(1)
 
