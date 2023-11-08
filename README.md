@@ -1,7 +1,14 @@
-# CAIE Pseudocode Interpreter (cpc)
+# CAIE Code (cpc)
 
+<br/>
 <p align="center">
-<a href="./README_cn.md">中文</a> | <a href="./README.md">English</a>
+<a href="./assets/">
+<img src="./assets/CPC4096.png" width="80" height="80" alt="logo">
+</a>
+<h3 align="center">the CAIE Pseudocode Interpreter</h3>
+</p>
+<p align="center">
+<a href="./README_zh.md">中文</a> | <a href="./README.md">English</a>
 </p>
 
 ## Installation and Update
@@ -85,8 +92,10 @@ You should retry `pip install readline` or `pip install gnureadline`.
 
 ### OSError when launching
 Enter the directory of this project, and run
-`rm -rf .history
-cpc -u`
+```shell
+rm -rf .cpc_history
+cpc -u
+```
 
 ### Other problems?
 If it still fails after re-installation,

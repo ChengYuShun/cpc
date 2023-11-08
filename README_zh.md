@@ -1,5 +1,12 @@
 # CAIE Code (cpc)
 
+<br/>
+<p align="center">
+<a href="./assets/">
+<img src="./assets/CPC4096.png" width="80" height="80" alt="logo">
+</a>
+<h3 align="center">the CAIE Pseudocode Interpreter</h3>
+</p>
 <p align="center">
 <a href="./README_cn.md">中文</a> | <a href="./README.md">English</a>
 </p>
@@ -70,11 +77,11 @@ pip install -r requirements.txt
 
 #### cpc在启动时报OSError
 进入`cpc`安装目录，可使用
-删除`.history`文件
+删除`.cpc_history`文件
 更新`cpc`
 ```shell
 cd $(which cpc)/../..
-rm -rf .history
+rm -rf .cpc_history
 cpc -u
 ```
 

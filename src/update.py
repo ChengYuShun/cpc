@@ -23,17 +23,27 @@ def _update(remote, repo):
     except:
         print('\033[31;1mFailed to Update\033[0m')
 
+def get_commit_hash_msg():
+    repo = git.Repo(HOME_PATH)
+    latest_commit_hash = repo.head.reference.commit.hexsha[:7]
+    latest_commit_message = repo.head.reference.commit.message.strip()
+    return latest_commit_hash, latest_commit_message
+
 def update():
     repo = git.Repo(HOME_PATH)
     remote = repo.remote()
+    # 获取当前commit记录
+    latest_commit_hash, latest_commit_message = get_commit_hash_msg()
 
     if new_animation('Checking Update', 3, check_update, failed_msg='Failed to Check Update', repo=repo, remote=remote):
+        # 获取新的commit记录
+        latest_commit_hash, latest_commit_message = get_commit_hash_msg()
         # 询问是否更新
-        u = input('There is a new version of the program. Do you want to update it? [Y/n] ').strip().lower()
+        u = input(f'There is a new version of the program\n{latest_commit_hash}: {latest_commit_message}\nDo you want to update it? [Y/n]').strip().lower()
         if u == '' or u == 'y':
             if new_animation('Updating', 3, _update, failed_msg='Failed to Update', remote=remote, repo=repo):
                 print('\033[1mUpdate Successful\033[0m')
         else:
             print('Stop Updating')
     else:
-        print('You are using the latest version!')
+        print(f'You are using the latest version!\nAt {latest_commit_hash}: {latest_commit_message}')
